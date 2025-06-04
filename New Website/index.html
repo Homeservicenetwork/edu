@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Service Network - Training & NPS Analytics</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+        :root {
+            --primary-color: #0056b3; /* A professional blue */
+            --secondary-color: #e2e6ea; /* Light gray for background elements */
+            --accent-color: #28a745; /* A subtle green for highlights */
+            --text-color: #333;
+            --light-text-color: #f8f9fa;
+            /* NPS 대시보드 색상을 기존 테마에 맞춰 조정 */
+            --nps-excellent-color: #10b981; /* green-600 */
+            --nps-good-color: #3b82f6;    /* blue-600 */
+            --nps-fair-color: #f59e0b;    /* yellow-600 */
+            --nps-poor-color: #ef4444;    /* red-600 */
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-text-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* Navbar remains the same */
+        .navbar {
+            background-color: var(--primary-color);
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--light-text-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            color: var(--light-text-color);
+            text-decoration: none;
+            font-weight: 400;
+            font-size: 1.1rem;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Hero Section (video) remains the same */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 70vh; /* Adjust as needed */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000; /* Fallback background for video */
+        }
+
+        .hero-video {
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: cover; /* Ensures the video covers the area */
+            z-index: 1;
+        }
+
+        .hero-overlay { /* Not directly used now, but kept for context if needed */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: var(--light-text-color);
+            padding: 20px;
+        }
+
+        .hero-overlay h1 { font-size: 3.5rem; margin-bottom: 15px; font-weight: 700; }
+        .hero-overlay p { font-size: 1.5rem; max-width: 800px; }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        /* Existing section styles */
+        .section {
+            background-color: #fff;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .section h2 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        .material-list { list-style: none; padding: 0; }
+        .material-item {
+            background-color: var(--secondary-color);
+            margin-bottom: 15px;
+            padding: 20px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease-in-out;
+        }
+        .material-item:hover { transform: translateY(-5px); }
+        .material-item a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 500;
+            flex-grow: 1;
+        }
+        .material-item a:hover { text-decoration: underline; }
+        .material-icon {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            margin-right: 15px;
+        }
+
+        /* Footer remains the same */
+        footer {
+            background-color: var(--primary-color);
+            color: var(--light-text-color);
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+
+        /* NPS Dashboard Specific Styles (Integrated & Modified) */
+        /* Tailwind CSS is included via CDN, so we're defining custom styles here to override/add specific elements */
+        .dashboard-header-bg {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #764ba2 100%); /* Adjusted to use primary color */
+        }
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .nps-excellent { color: var(--nps-excellent-color); }
+        .nps-good { color: var(--nps-good-color); }
+        .nps-fair { color: var(--nps-fair-color); }
+        .nps-poor { color: var(--nps-poor-color); }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 20px 0;
+        }
+        /* Heatmap colors adjusted to match Tailwind utilities but explicitly defined for control */
+        .bg-green-100-custom { background-color: #d1fae5; }
+        .text-green-800-custom { color: #065f46; }
+        .bg-blue-100-custom { background-color: #dbeafe; }
+        .text-blue-800-custom { color: #1e40af; }
+        .bg-yellow-100-custom { background-color: #fffbeb; }
+        .text-yellow-800-custom { color: #92400e; }
+        .bg-red-100-custom { background-color: #fee2e2; }
+        .text-red-800-custom { color: #991b1b; }
+        .bg-gray-100-custom { background-color: #f3f4f6; }
+        .text-gray-500-custom { color: #6b7280; }
+
+        /* General dashboard section styling to blend with existing .section */
+        .dashboard-section {
+            background-color: #fff; /* Keep white background for content sections */
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+        .dashboard-section h2 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        /* Adjustments for the Branch Performance section's background */
+        .branch-perf-section-bg {
+            background-color: var(--light-text-color); /* Matches body background */
+            padding: 30px; /* Consistent with .section */
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        @media print {
+            body { print-color-adjust: exact; }
+            .no-print { display: none; }
+        }
+    </style>
+
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="#" class="logo">Home Service Network</a>
+            <ul class="nav-links">
+                <li><a href="#monthly-ppt">Monthly PPT</a></li>
+                <li><a href="#training-guide">Training Guide</a></li>
+                <li><a href="#service-bulletin">Service Bulletin</a></li>
+                <li><a href="#branch-performance">Branch Performance</a></li> <li><a href="#nps-summary">NPS Summary</a></li> </ul>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <video class="hero-video" autoplay muted loop playsinline>
+            <source src="info/photos/May_winner.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        </header>
+
+    <section id="branch-performance" class="branch-perf-section-bg">
+        <div class="container mx-auto px-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Branch Performance Analysis</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-gray-50 p-6 rounded-lg card-shadow"> <h3 class="text-xl font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-building mr-2"></i>Branch NPS Comparison (May 2025)
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="branchComparisonChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-6 rounded-lg card-shadow"> <h3 class="text-xl font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-table mr-2"></i>Detailed Branch Metrics
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-300">
+                                    <th class="text-left py-2">Branch</th>
+                                    <th class="text-center py-2">May NPS</th>
+                                    <th class="text-center py-2">Surveys</th>
+                                    <th class="text-center py-2">Trend</th>
+                                </tr>
+                            </thead>
+                            <tbody id="branchTableBody">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 p-6 rounded-lg card-shadow mt-8"> <h3 class="text-xl font-semibold text-gray-800 mb-4">
+                    <i class="fas fa-th mr-2"></i>Monthly Performance Heatmap
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-center">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4">Branch</th>
+                                <th class="py-2 px-4">January</th>
+                                <th class="py-2 px-4">February</th>
+                                <th class="py-2 px-4">March</th>
+                                <th class="py-2 px-4">April</th>
+                                <th class="py-2 px-4">May</th>
+                            </tr>
+                        </thead>
+                        <tbody id="heatmapTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <section id="monthly-ppt" class="section">
+            <h2>Monthly PPT</h2>
+            <ul class="material-list">
+                <li class="material-item">
+                    <span class="material-icon">&#128459;&#65039;</span> <a href="info/file/MonthlyPPT/JAN2025.pdf" download>June 2025 Monthly training guide</a>
+                </li>
+                <li class="material-item">
+                    <span class="material-icon">&#128459;&#65039;</span> <a href="info/file/MonthlyPPT/May2025.pdf" download>May 2025 Monthly training guide</a>
+                </li>
+                <li class="material-item">
+                    <span class="material-icon">&#128459;&#65039;</span> <a href="info/file/MonthlyPPT/April 2025.pdf" download>April 2025 Monthly training guide</a>
+                </li>
+                <li class="material-item">
+                    <span class="material-icon">&#128459;&#65039;</span> <a href="info/file/MonthlyPPT/MAR2025.pdf" download>March 2025 Monthly training guide</a>
+                </li>
+                <li class="material-item">
+                    <span class="material-icon">&#128459;&#65039;</span> <a href="info/file/MonthlyPPT/Feb2025.pdf" download>Feb 2025 Monthly training guide</a>
+                </li>
+                <li class="material-item">
+                    <span class="material-icon">&#128459;&#65039;</span> <a href="info/file/MonthlyPPT/JAN2025.pdf" download>Jan 2025 Monthly training guide</a>
+                </li>
+            </ul>
+        </section>
+
+        <section id="training-guide" class="section">
+            <h2>Training Guide</h2>
+            <ul class="material-list">
+                <li class="material-item">
+                    <span class="material-icon">&#128218;</span> <a href="info/file/TrainingGuide/Home Visit Guide.pdf" download>Home Visit Guide</a>
+                </li>
+                <li class="material-item">
+                    <span class="material-icon">&#128218;</span> <a href="info/file/TrainingGuide/HSN sefety Guide.pdf" download>Home Safety Guide</a>
+                </li>
+                <li class="material-item">
+                    <span class="material-icon">&#128218;</span> <a href="info/file/TrainingGuide/Square Tax enroll guide_6.pptx" download>Square Tax enroll guide</a>
+                </li>
+                <li class="material-item">
+                    <span class="material-icon">&#128218;</span> <a href="info/file/TrainingGuide/Technician NPS COMPENSATION GUIDE 03192025.docx" download>NPS Compensation guide</a>
+                </li>
+            </ul>
+        </section>
+
+        <section id="service-bulletin" class="section">
+            <h2>Service Bulletin</h2>
+            <ul class="material-list">
+                <li class="material-item">
+                    <span class="material-icon">&#128227;</span> <a href="#">access denied</a>
+                </li>
+            </ul>
+        </section>
+
+        <section id="nps-summary" class="dashboard-section">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Executive Summary</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-lg card-shadow">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Total Surveys</p>
+                            <p class="text-3xl font-bold text-gray-800">3,354</p>
+                            <p class="text-sm text-green-600 mt-1">
+                                <i class="fas fa-arrow-up"></i> +15.2% vs Q1
+                            </p>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <i class="fas fa-poll text-blue-600 text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg card-shadow">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Average NPS</p>
+                            <p class="text-3xl font-bold nps-good">62.1</p>
+                            <p class="text-sm text-green-600 mt-1">
+                                <i class="fas fa-arrow-up"></i> +8.4 points
+                            </p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <i class="fas fa-chart-line text-green-600 text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg card-shadow">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Best Performing Branch</p>
+                            <p class="text-3xl font-bold text-gray-800">PAP</p>
+                            <p class="text-sm nps-excellent mt-1">NPS: 68.8</p>
+                        </div>
+                        <div class="bg-yellow-100 p-3 rounded-full">
+                            <i class="fas fa-trophy text-yellow-600 text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg card-shadow">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Top Technician</p>
+                            <p class="text-3xl font-bold text-gray-800">Seungho Lee</p>
+                            <p class="text-sm nps-excellent mt-1">NPS: 100.0</p>
+                        </div>
+                        <div class="bg-purple-100 p-3 rounded-full">
+                            <i class="fas fa-user-check text-purple-600 text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg card-shadow mb-8">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">
+                    <i class="fas fa-chart-line mr-2"></i>Monthly NPS Trend
+                </h3>
+                <div class="chart-container">
+                    <canvas id="monthlyTrendChart"></canvas>
+                </div>
+            </div>
+        </section>
+        
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Home Service Network. All rights reserved.</p>
+        <p class="text-sm text-gray-400 mt-2">Data covers service performance from January to May 2025</p>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.nav-links a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // If it's a link to an external section (like NPS), use its ID
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start' // Ensures the top of the section is visible
+                    });
+                }
+            });
+        });
+
+        // Optional: Add a class to the navbar on scroll for a sticky effect or background change
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.backgroundColor = 'rgba(0, 86, 179, 0.9)'; /* Slightly transparent when scrolled */
+            } else {
+                navbar.style.backgroundColor = 'var(--primary-color)';
+            }
+        });
+
+        // NPS Dashboard JavaScript Data
+        const branchData = {
+            FLO: { jan: 47.44, feb: 68.54, mar: 61.29, apr: 72.90, may: 73.33, surveys: [78, 89, 93, 107, 90] },
+            MDB: { jan: 55.86, feb: 63.19, mar: 35.48, apr: 53.71, may: 70.68, surveys: [145, 144, 124, 175, 191] },
+            NJB: { jan: 62.40, feb: 65.60, mar: 53.28, apr: 72.73, may: 72.02, surveys: [125, 125, 122, 187, 168] },
+            NYL: { jan: 33.33, feb: 33.33, mar: 71.19, apr: 67.44, may: 61.11, surveys: [81, 39, 59, 86, 72] },
+            NYR: { jan: 52.46, feb: 59.65, mar: 57.89, apr: 59.38, may: 68.75, surveys: [61, 57, 38, 64, 64] },
+            PAP: { jan: 65.25, feb: 78.23, mar: 64.17, apr: 74.07, may: 62.33, surveys: [141, 147, 120, 135, 146] },
+            SBB: { jan: 60.76, feb: 0, mar: -100, apr: 0, may: 0, surveys: [79, 1, 1, 0, 0] }
+        };
+
+        const technicianData = [ // Retained for utility functions, though 'technician-performance' section is removed
+            { name: "Andrew Jang", region: "MDB", count: 23, nps: 73.91, totalScore: 1700 },
+            { name: "Andrey Yakushev", region: "PAP", count: 9, nps: 100, totalScore: 900 },
+            { name: "Andy Son", region: "PAP", count: 20, nps: 40, totalScore: 800 },
+            { name: "Angel Avendano Castillo", region: "NYL", count: 8, nps: 100, totalScore: 800 },
+            { name: "Austin Perry", region: "NYR", count: 20, nps: 60, totalScore: 1200 },
+            { name: "Carlos Gomez", region: "FLO", count: 15, nps: 73.33, totalScore: 1100 },
+            { name: "Chansoo Kim", region: "MDB", count: 7, nps: 42.86, totalScore: 300 },
+            { name: "Cheon Ho Lee", region: "NJB", count: 19, nps: 73.68, totalScore: 1400 },
+            { name: "Dale Jung", region: "PAP", count: 43, nps: 48.84, totalScore: 2100 },
+            { name: "Davieri Bernal", region: "NYL", count: 5, nps: 20, totalScore: 100 },
+            { name: "Deandre Peart", region: "FLO", count: 7, nps: 85.71, totalScore: 600 },
+            { name: "Denny Jang", region: "PAP", count: 9, nps: 66.67, totalScore: 600 },
+            { name: "Dongyong Seo", region: "MDB", count: 22, nps: 59.09, totalScore: 1300 },
+            { name: "Gangseol Suh", region: "MDB", count: 15, nps: 60, totalScore: 900 },
+            { name: "Il Heung Park", region: "NJB", count: 26, nps: 88.46, totalScore: 2300 },
+            { name: "Jaehong Lim", region: "NYL", count: 17, nps: 23.53, totalScore: 400 },
+            { name: "James Song", region: "NYL", count: 19, nps: 78.95, totalScore: 1500 },
+            { name: "Javier Villar", region: "NJB", count: 14, nps: 64.29, totalScore: 900 },
+            { name: "Jinhyung Meang", region: "MDB", count: 13, nps: 53.85, totalScore: 700 },
+            { name: "Jonas Williams", region: "NYR", count: 10, nps: 70, totalScore: 700 },
+            { name: "Joshua Duncan", region: "FLO", count: 1, nps: 100, totalScore: 100 },
+            { name: "Junhan Kim", region: "NJB", count: 9, nps: 55.56, totalScore: 500 },
+            { name: "Kelvis Cordero", region: "NJB", count: 4, nps: 50, totalScore: 200 },
+            { name: "Kwan Keun Lee", region: "NJB", count: 16, nps: 68.75, totalScore: 1100 },
+            { name: "Marcos Villar", region: "NJB", count: 3, nps: 100, totalScore: 300 },
+            { name: "Marcus Leslie", region: "PAP", count: 9, nps: 44.44, totalScore: 400 },
+            { name: "Mariano Martinez", region: "NYR", count: 11, nps: 54.55, totalScore: 600 },
+            { name: "Mark Lindo", region: "FLO", count: 17, nps: 29.41, totalScore: 500 },
+            { name: "Michael A. Peterson", region: "NJB", count: 13, nps: 61.54, totalScore: 800 },
+            { name: "Minhyeok Kang", region: "MDB", count: 19, nps: 52.63, totalScore: 1000 },
+            { name: "Oleh Borysovskyy", region: "MDB", count: 17, nps: 88.24, totalScore: 1500 },
+            { name: "Richard Rampersaud", region: "FLO", count: 11, nps: 72.73, totalScore: 800 },
+            { name: "Robert Won", region: "MDB", count: 3, nps: 100, totalScore: 300 },
+            { name: "Rodney Montesino", region: "NJB", count: 4, nps: 0, totalScore: 0 },
+            { name: "Sam Kowalczuk", region: "NYR", count: 17, nps: 82.35, totalScore: 1400 },
+            { name: "Sangyong Nam", region: "MDB", count: 19, nps: 63.16, totalScore: 1200 },
+            { name: "Sean Pacurucu Caminero", region: "NYL", count: 14, nps: 78.57, totalScore: 1100 },
+            { name: "Seonhwang Lee", region: "MDB", count: 15, nps: 53.33, totalScore: 800 },
+            { name: "Sergio Rodriguez", region: "NYR", count: 6, nps: 83.33, totalScore: 500 },
+            { name: "Seungho Lee", region: "MDB", count: 38, nps: 100, totalScore: 3800 },
+            { name: "Stepan Pokryshka", region: "NJB", count: 22, nps: 54.55, totalScore: 1200 },
+            { name: "Sungeun Kim", region: "NYL", count: 9, nps: 55.56, totalScore: 500 },
+            { name: "Sungjun Park", region: "NJB", count: 8, nps: 100, totalScore: 800 },
+            { name: "Sungwoo Hong", region: "PAP", count: 33, nps: 93.94, totalScore: 3100 },
+            { name: "Taras Pankivskyi", region: "FLO", count: 28, nps: 85.71, totalScore: 2400 },
+            { name: "Tinh Le", region: "FLO", count: 11, nps: 100, totalScore: 1100 },
+            { name: "Vyacheslav Ivasiv", region: "PAP", count: 23, nps: 52.17, totalScore: 1200 },
+            { name: "Young Choi", region: "NJB", count: 30, nps: 86.67, totalScore: 2600 }
+        ];
+
+        // Initialize charts and tables when the DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMonthlyTrendChart();
+            initializeBranchComparisonChart();
+            populateBranchTable();
+            populateHeatmapTable();
+            populateRegionalPerformance(); // Still needed for the utility function getNPSClass
+        });
+
+        // Chart and data population functions (modified to use integrated styles/variables)
+        function initializeMonthlyTrendChart() {
+            const ctx = document.getElementById('monthlyTrendChart').getContext('2d');
+            const months = ['January', 'February', 'March', 'April', 'May'];
+            
+            const monthlyAverages = months.map((month, index) => {
+                const monthKey = ['jan', 'feb', 'mar', 'apr', 'may'][index];
+                let totalNPS = 0;
+                let totalSurveys = 0;
+                
+                Object.keys(branchData).forEach(branch => {
+                    if (branchData[branch][monthKey] !== undefined && branchData[branch][monthKey] > 0) {
+                        totalNPS += branchData[branch][monthKey] * branchData[branch].surveys[index];
+                        totalSurveys += branchData[branch].surveys[index];
+                    }
+                });
+                
+                return totalSurveys > 0 ? totalNPS / totalSurveys : 0;
+            });
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Overall NPS',
+                        data: monthlyAverages,
+                        borderColor: 'var(--primary-color)', /* Use primary color for line */
+                        backgroundColor: 'rgba(0, 86, 179, 0.1)', /* Lighter primary for fill */
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-color'),
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-color'),
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initializeBranchComparisonChart() {
+            const ctx = document.getElementById('branchComparisonChart').getContext('2d');
+            const branches = Object.keys(branchData).filter(branch => branchData[branch].may !== undefined && branchData[branch].may > 0);
+            const mayScores = branches.map(branch => branchData[branch].may);
+
+            // Dynamically assign colors based on NPS score using the utility function
+            const backgroundColors = mayScores.map(score => {
+                const npsClass = getNPSClass(score); // e.g., 'nps-excellent'
+                // Get the computed value of the CSS variable
+                return getComputedStyle(document.documentElement).getPropertyValue(`--${npsClass}-color`).trim();
+            });
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: branches,
+                    datasets: [{
+                        label: 'May 2025 NPS',
+                        data: mayScores,
+                        backgroundColor: backgroundColors, // Use dynamically generated colors
+                        borderColor: 'rgba(255, 255, 255, 0.8)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-color'),
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-color'),
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function populateBranchTable() {
+            const tbody = document.getElementById('branchTableBody');
+            const branches = Object.keys(branchData).filter(branch => branchData[branch].may !== undefined && branchData[branch].may > 0);
+            
+            branches.sort((a, b) => branchData[b].may - branchData[a].may);
+            
+            tbody.innerHTML = branches.map(branch => {
+                const data = branchData[branch];
+                const trend = (data.may !== undefined && data.apr !== undefined && data.may > data.apr) ? 'up' : 'down';
+                const trendIcon = trend === 'up' ? 'fa-arrow-up' : 'fa-arrow-down';
+                const trendClass = trend === 'up' ? 'text-green-600' : 'text-red-600';
+                const npsClass = getNPSClass(data.may);
+                
+                return `
+                    <tr class="border-b border-gray-200">
+                        <td class="py-2 font-semibold">${branch}</td>
+                        <td class="text-center py-2 ${npsClass}">${data.may !== undefined ? data.may.toFixed(1) : 'N/A'}</td>
+                        <td class="text-center py-2">${data.surveys[4] !== undefined ? data.surveys[4] : 'N/A'}</td>
+                        <td class="text-center py-2 ${trendClass}">
+                            <i class="fas ${trendIcon}"></i>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function populateHeatmapTable() {
+            const tbody = document.getElementById('heatmapTableBody');
+            const branches = Object.keys(branchData);
+            
+            tbody.innerHTML = branches.map(branch => {
+                const data = branchData[branch];
+                const months = [data.jan, data.feb, data.mar, data.apr, data.may];
+                
+                return `
+                    <tr>
+                        <td class="py-2 px-4 font-semibold">${branch}</td>
+                        ${months.map(score => `
+                            <td class="py-2 px-4 ${getHeatmapClass(score)}">
+                                ${score !== undefined && score > 0 ? score.toFixed(1) : 'N/A'}
+                            </td>
+                        `).join('')}
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function populateRegionalPerformance() {
+            // This function is still here because getNPSClass needs technicianData
+            // However, the section for it is removed from HTML.
+            // If it becomes completely unused, it can be removed.
+            const container = document.getElementById('regionalPerformance'); // This element no longer exists in HTML
+            if (!container) return; // Add check to prevent errors if element is gone
+
+            const regions = [...new Set(technicianData.map(t => t.region))];
+            
+            const regionalAverages = regions.map(region => {
+                const regionTechs = technicianData.filter(t => t.region === region);
+                const avgNPS = regionTechs.reduce((sum, t) => sum + t.nps, 0) / regionTechs.length;
+                const totalSurveys = regionTechs.reduce((sum, t) => sum + t.count, 0);
+                
+                return { region, avgNPS, totalSurveys, count: regionTechs.length };
+            }).sort((a, b) => b.avgNPS - a.avgNPS);
+            
+            container.innerHTML = regionalAverages.map(data => `
+                <div class="p-3 bg-gray-50 rounded mb-2 card-shadow">
+                    <div class="flex justify-between items-center">
+                        <p class="font-semibold">${data.region}</p>
+                        <p class="font-bold ${getNPSClass(data.avgNPS)}">${data.avgNPS.toFixed(1)}</p>
+                    </div>
+                    <p class="text-xs text-gray-600">${data.count} technicians, ${data.totalSurveys} surveys</p>
+                </div>
+            `).join('');
+        }
+
+        // Utility functions (adjusted to use CSS variables where appropriate)
+        function getNPSClass(score) {
+            if (score >= 80) return 'nps-excellent';
+            if (score >= 60) return 'nps-good';
+            if (score >= 40) return 'nps-fair';
+            return 'nps-poor';
+        }
+
+        function getHeatmapClass(score) {
+            if (score >= 80) return 'bg-green-100-custom text-green-800-custom';
+            if (score >= 60) return 'bg-blue-100-custom text-blue-800-custom';
+            if (score >= 40) return 'bg-yellow-100-custom text-yellow-800-custom';
+            if (score > 0) return 'bg-red-100-custom text-red-800-custom';
+            return 'bg-gray-100-custom text-gray-500-custom';
+        }
+        
+        // These are not directly used in the copied sections but are kept for completeness if needed for future expansion.
+        function getPerformanceBadge(score) {
+            if (score >= 80) return 'badge-excellent';
+            if (score >= 60) return 'badge-good';
+            if (score >= 40) return 'badge-fair';
+            return 'badge-poor';
+        }
+
+        function getPerformanceText(score) {
+            if (score >= 80) return 'Excellent';
+            if (score >= 60) return 'Good';
+            if (score >= 40) return 'Fair';
+            return 'Poor';
+        }
+    </script>
+</body>
+</html>
