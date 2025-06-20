@@ -266,6 +266,22 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-50 font-sans">
+    <!-- Password Lock Screen -->
+    <div id="lockScreen" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 9999;">
+        <div id="lockBox" style="background: #fff; padding: 40px; border-radius: 15px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-width: 400px; width: 90%;">
+            <h2 style="color: var(--primary-color); font-size: 1.8rem; margin-bottom: 20px; font-weight: 700;">Home Service Network</h2>
+            <p style="color: #666; margin-bottom: 25px; font-size: 1.1rem;">Enter 4-digit password</p>
+            <input type="password" id="codeInput" maxlength="4" pattern="\d{4}" autofocus 
+                   style="width: 200px; padding: 15px; font-size: 1.5rem; text-align: center; border: 2px solid #ddd; border-radius: 8px; margin-bottom: 20px; letter-spacing: 5px; font-weight: bold;">
+            <br>
+            <button onclick="checkCode()" 
+                    style="background: var(--primary-color); color: white; padding: 12px 30px; border: none; border-radius: 8px; font-size: 1.1rem; cursor: pointer; transition: background 0.3s;">
+                Enter
+            </button>
+            <div id="errorMsg" style="color: #ef4444; margin-top: 15px; font-weight: 500;"></div>
+        </div>
+    </div>
+
     <nav class="navbar">
         <div class="navbar-container">
             <a href="#" class="logo">Home Service Network</a>
@@ -471,6 +487,27 @@
     </footer>
 
     <script>
+        // Password Lock System
+        // 비밀번호를 난독화하여 저장 (1234 -> 49-50-51-52)
+        const _0x1a2b = [49, 50, 51, 52]; // 1234를 ASCII 코드로 변환
+        const _0x3c4d = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57]; // 0-9 ASCII 코드
+
+        function checkCode() {
+            const input = document.getElementById('codeInput').value;
+            const inputArray = input.split('').map(char => char.charCodeAt(0));
+            
+            // 입력값과 저장된 비밀번호 비교
+            if (inputArray.length === _0x1a2b.length && 
+                inputArray.every((val, index) => val === _0x1a2b[index])) {
+                document.getElementById('lockScreen').style.display = 'none';
+                document.body.style.overflow = 'auto';
+            } else {
+                document.getElementById('errorMsg').innerText = 'Incorrect 4-digit password.';
+                document.getElementById('codeInput').value = '';
+                document.getElementById('codeInput').focus();
+            }
+        }
+
         // Smooth scrolling for navigation links
         document.querySelectorAll('.nav-links a').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -568,6 +605,16 @@
             populateBranchTable();
             populateHeatmapTable();
             populateRegionalPerformance(); // Still needed for the utility function getNPSClass
+            
+            // 엔터키로도 입력 가능하게
+            document.getElementById('codeInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    checkCode();
+                }
+            });
+            
+            // 페이지 로드 시 스크롤 비활성화
+            document.body.style.overflow = 'hidden';
         });
 
         // Chart and data population functions (modified to use integrated styles/variables)
