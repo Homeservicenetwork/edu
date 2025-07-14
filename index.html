@@ -7,6 +7,7 @@
     
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
@@ -455,6 +456,11 @@
             }
         }
     </style>
+    <script type="module">
+        import 'https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate';
+        const el = document.createElement('pwa-update');
+        document.body.appendChild(el);
+      </script>
 </head>
 <body class="bg-gray-50 font-sans">
     <!-- Password Lock Screen -->
@@ -499,21 +505,21 @@
         <div class="container mx-auto px-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">Branch Performance Analysis</h2>
             
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-gray-50 p-6 rounded-lg card-shadow">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                <div class="bg-gray-50 p-6 rounded-lg card-shadow h-full flex flex-col">
                     <h3 class="text-xl font-semibold text-gray-800 mb-4">
                         <i class="fas fa-building mr-2"></i>Branch NPS Comparison (June 2025)
                     </h3>
-                    <div class="chart-container">
-                        <canvas id="branchComparisonChart"></canvas>
+                    <div class="chart-container flex-1">
+                        <canvas id="branchComparisonChart" style="height:100%"></canvas>
                     </div>
                 </div>
 
-                <div class="bg-gray-50 p-6 rounded-lg card-shadow">
+                <div class="bg-gray-50 p-6 rounded-lg card-shadow h-full flex flex-col">
                     <h3 class="text-xl font-semibold text-gray-800 mb-4">
                         <i class="fas fa-table mr-2"></i>Detailed Branch Metrics
                     </h3>
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto flex-1">
                         <table class="w-full text-sm">
                             <thead>
                                 <tr class="border-b border-gray-300">
@@ -901,14 +907,6 @@
                     backgroundColor: 'rgba(52, 152, 219, 0.1)',
                     borderWidth: 3,
                     fill: true,
-                    tension: 0.4
-                }, {
-                    label: 'Maximum Score',
-                    data: months.map(month => trends[month]?.maximum || 0),
-                    borderColor: '#27ae60',
-                    backgroundColor: 'rgba(39, 174, 96, 0.1)',
-                    borderWidth: 2,
-                    fill: false,
                     tension: 0.4
                 }, {
                     label: 'Minimum Score',
