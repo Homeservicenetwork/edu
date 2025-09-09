@@ -460,10 +460,9 @@
         import 'https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate';
         const el = document.createElement('pwa-update');
         document.body.appendChild(el);
-      </script>
+    </script>
 </head>
 <body class="bg-gray-50 font-sans">
-    <!-- Password Lock Screen -->
     <div id="lockScreen" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 9999;">
         <div id="lockBox" style="background: #fff; padding: 40px; border-radius: 15px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-width: 400px; width: 90%;">
             <h2 style="color: var(--primary-color); font-size: 1.8rem; margin-bottom: 20px; font-weight: 700;">Home Service Network</h2>
@@ -483,25 +482,21 @@
         <div class="navbar-container">
             <a href="#" class="logo">Home Service Network</a>
             <ul class="nav-links">
-                <li><a href="#branch-performance">Branch Performance</a></li>
                 <li><a href="#training-guide">Training Guide</a></li>
                 <li><a href="#monthly-ppt">Monthly PPT</a></li>
                 <li><a href="#service-bulletin">Service Bulletin</a></li>
-                <li><a href="#hass-analysis">HASS Analysis</a></li>
-                <li><a href="#nps-summary">Executive Summary</a></li>
             </ul>
         </div>
     </nav>
 
-    <!-- Hero Video Section -->
     <header class="hero-section">
         <video class="hero-video" autoplay muted loop playsinline>
-            <source src="info/photos/July_winners.mp4" type="video/mp4">
+            <source src="info/photos/August_winners.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </header>
 
-    <section id="branch-performance" class="branch-perf-section-bg">
+    <section id="branch-performance" class="branch-perf-section-bg" style="display:none;">
         <div class="container mx-auto px-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">Branch Performance Analysis</h2>
             
@@ -597,6 +592,10 @@
             <ul class="material-list">
                 <li class="material-item">
                     <span class="material-icon">📋</span>
+                    <a href="info/file/MonthlyPPT/SEP2025.pdf" download>September2025 Monthly training guide</a>
+                </li>
+                <li class="material-item">
+                    <span class="material-icon">📋</span>
                     <a href="info/file/MonthlyPPT/AUG2025.pdf" download>August 2025 Monthly training guide</a>
                 </li>
                 <li class="material-item">
@@ -641,12 +640,11 @@
         </section>
     </div>
 
-    <section id="hass-analysis" class="section">
+    <section id="hass-analysis" class="section" style="display:none;">
         <div class="container">
             <h2 class="section-title">HASS Score Analysis</h2>
             <p class="text-gray-600 mb-8 text-center">Technician Performance Analysis (Feb-Jul 2025)</p>
             
-            <!-- Summary Cards -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-number" id="total-technicians">62</div>
@@ -666,13 +664,11 @@
                 </div>
             </div>
             
-            <!-- Monthly Trends Chart -->
             <div class="chart-container bg-white p-6 rounded-lg shadow-md mb-8">
                 <h3 class="text-xl font-semibold text-center mb-4">Monthly HASS Score Trends</h3>
                 <canvas id="monthly-trends-chart" style="height: 400px;"></canvas>
             </div>
             
-            <!-- Top and Bottom Performers -->
             <div class="performers-grid">
                 <div class="performers-section">
                     <h3 class="performers-title top">🌟 Top Performers</h3>
@@ -726,7 +722,6 @@
                 </div>
             </div>
             
-            <!-- Detailed Rankings Table -->
             <div class="rankings-container">
                 <h3>Complete Technician Rankings</h3>
                 <div class="table-controls">
@@ -762,7 +757,7 @@
         </div>
     </section>
 
-    <section id="nps-summary" class="section">
+    <section id="nps-summary" class="section" style="display:none;">
         <h2 class="text-2xl font-bold text-gray-800 mb-6">Executive Summary</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
