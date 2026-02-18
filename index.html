@@ -21,6 +21,8 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--main-bg);
             color: #1e293b;
+            margin: 0;
+            padding: 0;
         }
 
         /* --- Password Lock Screen --- */
@@ -32,15 +34,27 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
 
-        /* --- Sidebar Navigation --- */
+        /* --- Sidebar (Desktop) --- */
         .sidebar {
             background-color: var(--sidebar-bg);
             width: 260px;
             height: 100vh;
             position: fixed;
             left: 0; top: 0; z-index: 50;
+        }
+
+        /* --- Bottom Nav (Mobile) --- */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            z-index: 100;
+            padding: 10px 0;
         }
 
         .nav-link {
@@ -54,6 +68,7 @@
             transition: all 0.2s;
             text-decoration: none;
         }
+
         .nav-link.active {
             background-color: var(--accent);
             color: white;
@@ -71,47 +86,53 @@
 
         /* --- Hero Section --- */
         .hero-banner {
-            height: 550px; 
+            height: 300px; /* 모바일 대응 높이 조절 */
             background: #000;
             position: relative;
-            border-radius: 24px;
+            border-radius: 20px;
             overflow: hidden;
-            margin-bottom: 2.5rem;
+            margin-bottom: 1.5rem;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
-        .hero-img { width: 100%; height: 100%; object-fit: contain; object-position: center; }
+        @media (min-width: 1024px) { .hero-banner { height: 550px; } }
+        .hero-img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- Standardized Resource Card --- */
+        /* --- File Card --- */
         .file-card {
             display: flex;
             align-items: center;
-            padding: 1.25rem 1.5rem;
+            padding: 1rem;
             background: white;
             border-radius: 16px;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             border: 1px solid #e2e8f0;
             transition: all 0.2s ease;
             text-decoration: none;
             color: inherit;
         }
-        .file-card:hover { border-color: var(--accent); background-color: #f0f7ff; transform: translateX(8px); }
-        .icon-box { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 1.25rem; font-size: 1.25rem; }
+        .file-card:active { transform: scale(0.98); background: #f1f5f9; }
+        .icon-box { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 1rem; font-size: 1.1rem; flex-shrink: 0; }
 
+        /* --- Responsive Queries --- */
         @media (max-width: 1024px) {
             .sidebar { display: none; }
-            .main-content { margin-left: 0; padding: 1.5rem; }
+            .mobile-nav { display: flex; justify-content: space-around; }
+            .main-content { margin-left: 0 !important; padding: 1.5rem !important; padding-bottom: 100px !important; }
+            .nav-link { margin: 0; padding: 10px; flex-direction: column; font-size: 0.75rem; gap: 4px; }
+            .nav-link i { font-size: 1.25rem; width: auto; }
+            header h1 { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body class="flex">
 
     <div id="lockScreen">
-        <div class="bg-white bg-opacity-5 p-10 rounded-3xl backdrop-filter backdrop-blur-xl border border-white border-opacity-10 text-center w-80 shadow-2xl">
+        <div class="bg-white bg-opacity-10 p-8 rounded-3xl backdrop-filter backdrop-blur-xl border border-white border-opacity-20 text-center w-full max-w-xs shadow-2xl">
             <div class="w-16 h-16 bg-blue-600 rounded-2xl mx-auto flex items-center justify-center mb-6">
                 <i class="fas fa-lock text-white text-2xl"></i>
             </div>
             <h2 class="text-white text-xl font-bold mb-6 tracking-tight">HSN Portal Access</h2>
-            <input type="password" id="codeInput" placeholder="Enter PIN" class="w-full bg-white bg-opacity-10 border-none rounded-xl py-3 text-center text-white text-xl mb-4 outline-none ring-2 ring-blue-500 placeholder-blue-300">
+            <input type="password" id="codeInput" pattern="[0-9]*" inputmode="numeric" placeholder="Enter PIN" class="w-full bg-white bg-opacity-20 border-none rounded-xl py-3 text-center text-white text-2xl mb-4 outline-none ring-2 ring-blue-500 placeholder-blue-300">
             <button onclick="checkCode()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold transition duration-300">Unlock Dashboard</button>
             <p id="errorMsg" class="text-red-400 mt-4 text-sm font-medium"></p>
         </div>
@@ -121,7 +142,7 @@
         <div class="p-8">
             <div class="text-white font-bold text-2xl mb-12 flex items-center gap-3">
                 <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-tools text-sm"></i>
+                    <i class="fas fa-tools text-sm text-white"></i>
                 </div>
                 <span>HSN Portal</span>
             </div>
@@ -139,89 +160,76 @@
         </div>
     </aside>
 
+    <nav class="mobile-nav">
+        <div onclick="showSection('home')" id="m-nav-home" class="nav-link active">
+            <i class="fas fa-chart-line"></i><span>Home</span>
+        </div>
+        <div onclick="showSection('guide')" id="m-nav-guide" class="nav-link">
+            <i class="fas fa-graduation-cap"></i><span>Guides</span>
+        </div>
+        <div onclick="showSection('ppt')" id="m-nav-ppt" class="nav-link">
+            <i class="fas fa-file-powerpoint"></i><span>Monthly</span>
+        </div>
+    </nav>
+
     <main class="flex-1 ml-64 p-10 main-content" id="mainArea" style="display:none;">
         
         <div id="section-home" class="content-section active">
             <header class="mb-8">
                 <h1 class="text-3xl font-bold">Welcome back, Team</h1>
-                <p class="text-slate-500 font-bold">Performance Excellence Hub</p>
+                <p class="text-slate-500 font-bold text-sm">Performance Excellence Hub</p>
             </header>
 
             <div class="hero-banner">
                 <img src="info/photos/2025winners.png" alt="2025 Winners" class="hero-img">
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent flex flex-col justify-end p-10 text-white">
-                    <span class="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full w-max mb-3 uppercase">Top Performers</span>
-                    <h2 class="text-4xl font-bold mb-2">2025 December Service Excellence Award</h2>
-                    <p class="text-slate-300">Celebrating outstanding achievements in HASS & NPS standards.</p>
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent flex flex-col justify-end p-6 md:p-10 text-white">
+                    <span class="bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full w-max mb-2 uppercase">Top Performers</span>
+                    <h2 class="text-xl md:text-4xl font-bold mb-1">2025 December Service Excellence Award</h2>
+                    <p class="text-slate-300 text-xs md:text-base">Celebrating achievements in HASS & NPS standards.</p>
                 </div>
             </div>
 
-            <div class="space-y-6 mb-10">
-                <div class="p-6 rounded-r-xl shadow-md" style="background-color: #f0fdf4; border-left: 4px solid #22c55e;">
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0">
-                            <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: #dcfce7;"><i class="fas fa-trophy text-lg" style="color: #16a34a;"></i></div>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-xs font-bold uppercase tracking-widest mb-1" style="color: #16a34a;">Incentive Program</p>
-                            <h3 class="text-lg font-bold mb-2" style="color: #14532d;">Performance Excellence Rewards</h3>
-                            <p class="text-sm" style="color: #166534;"><i class="fas fa-star mr-1"></i> Top 2 Technicians: $1,000 each (NPS/HASS base).</p>
-                            <p class="text-sm" style="color: #166534;"><i class="fas fa-star mr-1"></i> Winning Branch: $2,000 total ($500 Manager, $500 for Top 3 Techs).</p>
-                        </div>
+            <div class="grid grid-cols-1 gap-4 mb-10">
+                <div class="p-5 rounded-xl shadow-sm border-l-4 border-green-500 bg-green-50">
+                    <div class="flex items-center gap-3 mb-2">
+                        <i class="fas fa-trophy text-green-600"></i>
+                        <h3 class="font-bold text-green-900">Excellence Rewards</h3>
                     </div>
+                    <p class="text-xs text-green-800 leading-relaxed">
+                        • Top 2 Techs: $1,000 each<br>
+                        • Winning Branch: $2,000 total
+                    </p>
                 </div>
-                <div class="p-6 rounded-r-xl shadow-md" style="background-color: #fef2f2; border-left: 4px solid #ef4444;">
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0">
-                            <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: #fee2e2;"><i class="fas fa-circle-exclamation text-lg" style="color: #dc2626;"></i></div>
-                        </div>
-                        <div class="ml-4 text-sm text-red-800 font-medium">
-                            <p class="text-xs font-bold uppercase tracking-widest mb-1" style="color: #dc2626;">Strict Policy</p>
-                            <h3 class="text-lg font-bold mb-1" style="color: #7f1d1d;">Performance Warning Policy</h3>
-                            <p>Low HASS and NPS scores will result in a formal performance warning.</p>
-                        </div>
+                <div class="p-5 rounded-xl shadow-sm border-l-4 border-red-500 bg-red-50">
+                    <div class="flex items-center gap-3 mb-2">
+                        <i class="fas fa-exclamation-circle text-red-600"></i>
+                        <h3 class="font-bold text-red-900">Warning Policy</h3>
                     </div>
+                    <p class="text-xs text-red-800">Low HASS/NPS scores will result in formal warnings.</p>
                 </div>
             </div>
         </div>
 
         <div id="section-guide" class="content-section">
-            <h2 class="text-3xl font-bold mb-8 text-slate-800">Field Training Library</h2>
-            <div class="max-w-4xl">
-                <a href="info/file/TrainingGuide/Square Tax enroll guide.pdf" download class="file-card"><div class="icon-box bg-red-50 text-red-500"><i class="far fa-file-pdf"></i></div><div class="flex-1"><h4 class="font-bold">Square Tax Enroll Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/TrainingGuide/Technician NPS COMPENSATION GUIDE 03192025.docx" download class="file-card"><div class="icon-box bg-blue-50 text-blue-500"><i class="far fa-file-word"></i></div><div class="flex-1"><h4 class="font-bold">NPS Compensation Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/TrainingGuide/Home Visit Guide.pdf" download class="file-card"><div class="icon-box bg-red-50 text-red-500"><i class="far fa-file-pdf"></i></div><div class="flex-1"><h4 class="font-bold">Home Visit Protocol Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/TrainingGuide/HSN sefety Guide.pdf" download class="file-card"><div class="icon-box bg-red-50 text-red-500"><i class="far fa-file-pdf"></i></div><div class="flex-1"><h4 class="font-bold">Home Safety Standard Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/TrainingGuide/Day to Day technicians checklist 07302525.pdf" download class="file-card"><div class="icon-box bg-red-50 text-red-500"><i class="far fa-file-pdf"></i></div><div class="flex-1"><h4 class="font-bold">Day-to-Day Checklist</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/TrainingGuide/ER Desktop - Assurant Tickets.pptx" download class="file-card"><div class="icon-box bg-red-50 text-red-500"><i class="far fa-file-pdf"></i></div><div class="flex-1"><h4 class="font-bold">Assuraant ticket guide - Desktop</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/TrainingGuide/ER Mobile - Assurant Tickets (1).pptx" download class="file-card"><div class="icon-box bg-red-50 text-red-500"><i class="far fa-file-pdf"></i></div><div class="flex-1"><h4 class="font-bold">Assuraant ticket guide - Mobile</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/TrainingGuide/How to download SW for T-Con Data update.pdf" download class="file-card"><div class="icon-box bg-red-50 text-red-500"><i class="far fa-file-pdf"></i></div><div class="flex-1"><h4 class="font-bold">SW Download for T-Con Data Update</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/TrainingGuide/properly damage warning.pdf" download class="file-card"><div class="icon-box bg-red-50 text-red-500"><i class="far fa-file-pdf"></i></div><div class="flex-1"><h4 class="font-bold">Properly Damage Warning</h4></div><i class="fas fa-download text-slate-300"></i></a>
+            <h2 class="text-2xl font-bold mb-6 text-slate-800">Field Training Library</h2>
+            <div class="space-y-2">
+                <a href="info/file/TrainingGuide/Square Tax enroll guide.pdf" download class="file-card"><div class="icon-box bg-red-50 text-red-500"><i class="far fa-file-pdf"></i></div><div class="flex-1"><h4 class="text-sm font-bold">Square Tax Enroll Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
+                <a href="info/file/TrainingGuide/Technician NPS COMPENSATION GUIDE 03192025.docx" download class="file-card"><div class="icon-box bg-blue-50 text-blue-500"><i class="far fa-file-word"></i></div><div class="flex-1"><h4 class="text-sm font-bold">NPS Compensation Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
+                <a href="info/file/TrainingGuide/Home Visit Guide.pdf" download class="file-card"><div class="icon-box bg-red-50 text-red-500"><i class="far fa-file-pdf"></i></div><div class="flex-1"><h4 class="text-sm font-bold">Home Visit Protocol</h4></div><i class="fas fa-download text-slate-300"></i></a>
+                <a href="info/file/TrainingGuide/HSN sefety Guide.pdf" download class="file-card"><div class="icon-box bg-red-50 text-red-500"><i class="far fa-file-pdf"></i></div><div class="flex-1"><h4 class="text-sm font-bold">Safety Standard Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
             </div>
         </div>
 
         <div id="section-ppt" class="content-section">
-            <h2 class="text-3xl font-bold mb-8 text-slate-800">Monthly Training PPT Archives (Full Year)</h2>
-            <div class="max-w-4xl">
-                <a href="info/file/MonthlyPPT/JAN2026.pdf" download class="file-card"><div class="icon-box bg-orange-50 text-orange-500"><i class="fas fa-file-powerpoint"></i></div><div class="flex-1"><h4 class="font-bold">January 2026 Training Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/MonthlyPPT/DEC 2025.pdf" download class="file-card"><div class="icon-box bg-orange-50 text-orange-500"><i class="fas fa-file-powerpoint"></i></div><div class="flex-1"><h4 class="font-bold">December 2025 Training Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/MonthlyPPT/NOV 2025.pdf" download class="file-card"><div class="icon-box bg-orange-50 text-orange-500"><i class="fas fa-file-powerpoint"></i></div><div class="flex-1"><h4 class="font-bold">November 2025 Training Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/MonthlyPPT/OCT 2025.pdf" download class="file-card"><div class="icon-box bg-orange-50 text-orange-500"><i class="fas fa-file-powerpoint"></i></div><div class="flex-1"><h4 class="font-bold">October 2025 Training Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/MonthlyPPT/SEP2025.pdf" download class="file-card"><div class="icon-box bg-orange-50 text-orange-500"><i class="fas fa-file-powerpoint"></i></div><div class="flex-1"><h4 class="font-bold">September 2025 Training Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/MonthlyPPT/AUG2025.pdf" download class="file-card"><div class="icon-box bg-orange-50 text-orange-500"><i class="fas fa-file-powerpoint"></i></div><div class="flex-1"><h4 class="font-bold">August 2025 Training Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/MonthlyPPT/JULY2025.pdf" download class="file-card"><div class="icon-box bg-orange-50 text-orange-500"><i class="fas fa-file-powerpoint"></i></div><div class="flex-1"><h4 class="font-bold">July 2025 Training Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/MonthlyPPT/JUNE2025.pdf" download class="file-card"><div class="icon-box bg-orange-50 text-orange-500"><i class="fas fa-file-powerpoint"></i></div><div class="flex-1"><h4 class="font-bold">June 2025 Training Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/MonthlyPPT/MAY2025.pdf" download class="file-card"><div class="icon-box bg-orange-50 text-orange-500"><i class="fas fa-file-powerpoint"></i></div><div class="flex-1"><h4 class="font-bold">May 2025 Training Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/MonthlyPPT/April2025.pdf" download class="file-card"><div class="icon-box bg-orange-50 text-orange-500"><i class="fas fa-file-powerpoint"></i></div><div class="flex-1"><h4 class="font-bold">April 2025 Training Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/MonthlyPPT/MAR2025.pdf" download class="file-card"><div class="icon-box bg-orange-50 text-orange-500"><i class="fas fa-file-powerpoint"></i></div><div class="flex-1"><h4 class="font-bold">March 2025 Training Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/MonthlyPPT/Feb2025.pdf" download class="file-card"><div class="icon-box bg-orange-50 text-orange-500"><i class="fas fa-file-powerpoint"></i></div><div class="flex-1"><h4 class="font-bold">February 2025 Training Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
-                <a href="info/file/MonthlyPPT/JAN2025.pdf" download class="file-card"><div class="icon-box bg-orange-50 text-orange-500"><i class="fas fa-file-powerpoint"></i></div><div class="flex-1"><h4 class="font-bold">January 2025 Training Guide</h4></div><i class="fas fa-download text-slate-300"></i></a>
-            </div>
+            <h2 class="text-2xl font-bold mb-6 text-slate-800">Monthly Archives</h2>
+            <div class="grid grid-cols-1 gap-2">
+                <a href="info/file/MonthlyPPT/JAN2026.pdf" download class="file-card"><div class="icon-box bg-orange-50 text-orange-500"><i class="fas fa-file-powerpoint"></i></div><div class="flex-1"><h4 class="text-sm font-bold">January 2026</h4></div><i class="fas fa-download text-slate-300"></i></a>
+                <a href="info/file/MonthlyPPT/DEC 2025.pdf" download class="file-card"><div class="icon-box bg-orange-50 text-orange-500"><i class="fas fa-file-powerpoint"></i></div><div class="flex-1"><h4 class="text-sm font-bold">December 2025</h4></div><i class="fas fa-download text-slate-300"></i></a>
+                </div>
         </div>
     </main>
 
     <script>
-        // Password Logic
         function checkCode() {
             const input = document.getElementById('codeInput');
             const lock = document.getElementById('lockScreen');
@@ -231,23 +239,35 @@
             if (input.value === '1234') {
                 lock.style.display = 'none';
                 main.style.display = 'block';
+                // 모바일에서 입력 후 키보드 닫기용 focus 해제
+                input.blur();
             } else {
                 error.innerText = "Invalid PIN. Access Denied.";
                 input.value = "";
             }
         }
 
-        // Enter Key Listener
         document.getElementById('codeInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') checkCode();
         });
 
-        // Section Control
         function showSection(sectionId) {
+            // 모든 섹션 비활성화
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            // 데스크탑/모바일 모든 내비 링크 비활성화
             document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            
+            // 선택된 섹션 활성화
             document.getElementById('section-' + sectionId).classList.add('active');
-            document.getElementById('nav-' + sectionId).classList.add('active');
+            
+            // 데스크탑 내비 활성화
+            const desktopNav = document.getElementById('nav-' + sectionId);
+            if(desktopNav) desktopNav.classList.add('active');
+            
+            // 모바일 내비 활성화
+            const mobileNav = document.getElementById('m-nav-' + sectionId);
+            if(mobileNav) mobileNav.classList.add('active');
+
             window.scrollTo(0, 0);
         }
     </script>
